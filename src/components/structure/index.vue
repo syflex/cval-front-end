@@ -1,5 +1,7 @@
 <template>
     <div>
+
+
         <div class="row full-width gutter-sm">
             <div class="col-7">
                 <q-input v-model="form.claimant_id" placeholder="Claimant ID"/>
@@ -8,31 +10,27 @@
                 <q-input v-model="form.other_name" placeholder="Claimant Other Names"/>
                 <q-input v-model="form.location" placeholder="Claimant Location"/>
                 <q-input v-model="form.community" placeholder="Claimant Community"/>
-                <q-input v-model="form.coordinates" placeholder="Claimant Coodinates"/>                
+                <q-input v-model="form.coordinates" placeholder="Coodinates"/>                
             </div>
             <div class="col-5">
-                <q-uploader url="url" extensions=".jpg,.jpeg,.png" auto-expand 
-                    :upload-factory="uploadFile"
-                />
-                <!-- <q-uploader url="url" /> -->
-                <!-- <signature/> -->
-                <q-btn no-caps label="Signature" @click="signature = true"/>
+                <img :src="image ? image : '/statics/user.jpg'" width="60%">
+                <img :src="form.c_signature ? form.c_signature : ''" width="60%">
+                <div v-if="!image">
+                    <input type="file" @change="onFileChange">
+                </div>
+                <div v-else>
+                    <button @click="removeImage">Remove image</button>
+                </div>
+                <div v-if="!form.c_signature">
+                    <add @clicked="onClickChild"/>
+                </div>
+                <div v-else>
+                    <button @click="form.c_signature = null">Remove signature</button>
+                </div>                       
             </div>
         </div>
-        
-        <div v-if="signature">
-            <VueSignaturePad
-                width="500px"
-                height="200px"
-                ref="signaturePad" class="bg-grey-5"
-                />
-            <div>
-            <button @click="save">Save</button>
-            <button @click="undo">Undo</button>
-            </div>
-        </div>
-        
 
+        
     <div v-for="(crop, index) in form.crops" v-bind:key="index" class="row">
         <q-field class="col-2">
             <q-select v-model="crop.type" float-label="Crop Type" :options="typeOptions"
@@ -40,10 +38,10 @@
             />
         </q-field>
         <q-field class="col-2">
-            <q-select v-model="crop.name" float-label="Crop Name" :options="crops" />
+            <q-select filter v-model="crop.name" float-label="Crop Name" :options="crops" />
         </q-field> 
         <q-field class="col-2">
-            <q-select v-model="crop.maturity" float-label="Crop Maturity" :options="maturityOptions" 
+            <q-select filter v-model="crop.maturity" float-label="Crop Maturity" :options="maturityOptions" 
                 @input="check(crop.name,crop.maturity,index)"
             />
         </q-field>        
@@ -55,23 +53,21 @@
             <q-input v-model="crop.price" float-label="Rate (N)" numeric-keyboard-toggle placeholder="Rate (N)"/>
         </q-field>
         <q-field class="col-2">
-            <q-input :value="crop.value = crop.unit + crop.price" float-label="Rate (N)" numeric-keyboard-toggle placeholder="Rate (N)"/>
+            <q-input :value="crop.value = (Number(crop.unit) * Number(crop.price))" float-label="Rate (N)" numeric-keyboard-toggle placeholder="Rate (N)"/>
         </q-field>
 
         <div class="col-lg-1">
-            <div class="float-center row flex-center">
-                <q-btn color="red" size="sm" @click="removeLine(index)" icon="delete" round/>
-                <q-btn color="secondary" size="sm" v-if="index + 1 === form.crops.length" @click="addLine" icon="add" round />
-            </div>
+           <q-btn color="red" size="sm" @click="removeLine(index)" icon="delete" round/>    
         </div>
+        <q-btn color="primary" label="add new row" size="sm" v-if="index + 1 === form.crops.length" @click="addLine" icon="add" class="full-width" />
     </div>
 
-        <div class="row full-width">
-            <q-btn class="full-width" @click="save_entery" color="secondary" label="Save Entery" :loading="loading" no-caps>
-                    <q-spinner-ios slot="loading" class="q-mr-sm"></q-spinner-ios>
-                    <span slot="loading"> Saving Entery..</span>
-            </q-btn>  
-        </div>
+    <div class="row full-width">
+        <q-btn class="full-width" @click="save_entery" color="secondary" label="Save Entery" :loading="loading" no-caps>
+                <q-spinner-ios slot="loading" class="q-mr-sm"></q-spinner-ios>
+                <span slot="loading"> Saving Entery..</span>
+        </q-btn>  
+    </div>
 
     </div>
 </template>
@@ -79,19 +75,27 @@
 <script>
 // import signature from './partials/signature'
 import { QUploader } from "quasar";
+import cropList from './../../data/crop/crop_list.js'
+import cropPrice from './../../data/crop/crop_price.js'
+import cropType from './../../data/crop/crop_type.js'
+import cropMaturity from './../../data/crop/crop_maturity.js'
 import add from "./partials/add"
 export default {
 
     data(){
         return{
+            imae: null,
+            image: '',
             form:{
-                claimant_id: 'NNPC/MCO/DBS/',
+                valuer_id: '1',
+                claimant_id: 'NNPC/MCO/AKK/LOT12/'+ Date.now(),
                 first_name: null,
                 last_name: null,
                 other_name: null,
                 location: null,
                 community: null,
                 coordinates: null,
+                image: null,
                 c_signature: null,
 
                 crops: [],
@@ -103,83 +107,13 @@ export default {
             crops: [],
             signature: false,
 
-            typeOptions:[
-                    {
-                        label: 'Economic Trees', value: 'Economic Trees'
-                    }, 
-                    {
-                        label: 'Crops', value: 'Crops'
-                    }
-                ],          
+            typeOptions: cropType,          
 
-            maturityOptions:[
-                    {
-                        label: 'Mature', value: 'Mature'
-                    }, 
-                    {
-                        label: 'Immature', value: 'Immature'
-                    }, 
-                    {
-                        label: 'Seedling', value: 'Seedling'
-                    }
-                ],
+            maturityOptions: cropMaturity,
                 
-            mainData:[
-                    {
-                        type: 'Economic Trees', 
-                        data: [
-                            {
-                                label: 'Mango', value: 'Mango'
-                            }, 
-                            {
-                                label: 'Dorowa', value: 'Dorowa'
-                            }
-                        ]
-                    }, 
-                    {
-                        type: 'Crops', 
-                        data: [
-                            {
-                                label: 'Mango', value: 'Mango'
-                            }, 
-                            {
-                                label: 'Dorowa', value: 'Dorowa'
-                            }
-                        ]
-                    }
-                ],
+            mainData: cropList,
 
-            dataPrice:[
-                    {
-                        crop: 'Mango', 
-                        data: [
-                            {
-                                label: 'Mature', value: '5000'
-                            }, 
-                            {
-                                label: 'Immature', value: '2000'
-                            }, 
-                            {
-                                label: 'Seedling', value: '1000'
-                            }
-                        ]
-                    }, 
-                    {
-                       crop: 'Dorowa', 
-                        data: [
-                            {
-                                label: 'Mature', value: '6000'
-                            }, 
-                            {
-                                label: 'Immature', value: '3000'
-                            }, 
-                            {
-                                label: 'Seedling', value: '2000'
-                            }
-                        ]
-                    }
-                ],
-               
+            dataPrice: cropPrice,               
 
         }
     },
@@ -198,12 +132,19 @@ export default {
                         message: 'Crop Entry saved successfully'
                     })
                     this.loading = false;
-                    this.opened = false   
+                    this.opened = false;
+                    
+                    
+                    this.clearEntery();
+                    
 
             })
             .catch(err => {
                     this.loading = false;
-                    this.opened = false  
+                    this.opened = false 
+                     this.$q.notify({color: 'negative', icon: 'done',
+                        message: 'Error: data not saved  please try again'
+                    }) 
             })
         },
 
@@ -256,27 +197,57 @@ export default {
             if (lineId > 0) this.form.crops.splice(lineId, 1)
         },
 
-        undo() {
-        this.$refs.signaturePad.undoSignature();
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0]);
+    },
+
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = (e) => {
+        vm.image = e.target.result;
+        this.form.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+
+    removeImage: function (e) {
+      this.image = '';
+    },
+
+    onClickChild (value) {
+         this.form.c_signature = value // someValue
       },
-      save() {
-        const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
-        console.log(isEmpty);
-        console.log(data);
-        this.form.c_signature = data
-      },
+    
+    clearEntery(){
+        this.form.claimant_id = 'NNPC/MCO/AKK/LOT12/'+ Date.now(),
+                    this.form.first_name = null;
+                    this.form.last_name = null;
+                    this.form.other_name = null;
+                    this.form.location = null;
+                    this.form.community = null;
+                    this.form.coordinates =  null;
+                    this.form.image = null;
+                    this.form.c_signature = null;
+                    
+                    this.form.crops = [];
 
-      uploadFile (file) {
-         
-      // "file" is an Object containing file's props, including content
-
-      // for updating progress (as 0-1 floating number), we need to call:
-      // updateProgress (bytesTransferred / totalBytes)
-
-      // we need to return a Promise
-      // (resolves when upload is done, rejects when there's an error)
+                    for (let index = 0; index < 3; index++) {
+                        this.form.crops.push({
+                            type: null,
+                            name: null,
+                            maturity: null,
+                            unit: null,
+                            price: null,
+                            value: null,
+                        })     
+                    }     
     }
-
 
     },
 
