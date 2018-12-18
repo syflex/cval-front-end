@@ -13,7 +13,7 @@
                 <q-input v-model="form.coordinates" placeholder="Coodinates"/>                
             </div>
             <div class="col-5">
-                <img :src="image ? image : '/statics/user.jpg'" width="60%">
+                <img :src="image ? form.image : '/statics/user.jpg'" width="60%">
                 <img :src="form.c_signature ? form.c_signature : ''" width="60%">
                 <div v-if="!image">
                     <input type="file" @change="onFileChange">

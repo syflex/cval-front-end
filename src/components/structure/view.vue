@@ -1,6 +1,6 @@
 <template>
      <q-table
-    title="Crops Claimant's Table"
+    title="Structure Claimant's Table"
     :data="tableData"
     :columns="columns"
     row-key="name"
@@ -26,7 +26,7 @@ created() {
 },
   methods:{
       get_data(){
-          this.$axios.get('api/crop')
+          this.$axios.get('api/structure')
           .then(Response => {
              this.tableData = Response.data.data
           })

@@ -12,7 +12,7 @@
           round :to="{name: 'Home'}"
           aria-label="home"
         >
-          <q-icon name="menu" />
+          <q-icon name="home" />
         </q-btn>
 
         <q-toolbar-title>
