@@ -64,6 +64,10 @@ const data = [
             },
             {
                 label: 'Lemun Tsami', value: 'Lemun Tsami'
+            },
+            ,
+            {
+                label: 'Lemun Tangerine', value: 'Lemun Tangerine'
             }, 
             {
                 label: 'Albijuja', value: 'Albijuja'
@@ -85,6 +89,9 @@ const data = [
             }, 
             {
                 label: 'Gurijiya', value: 'Gurijiya'
+            }, 
+            {
+                label: 'Gawasa', value: 'Gawasa'
             },
             {
                 label: 'Katsari', value: 'Katsari'
