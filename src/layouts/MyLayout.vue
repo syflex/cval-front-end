@@ -2,10 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
       <q-toolbar
-        color="primary"
-        :glossy="$q.theme === 'mat'"
-        :inverted="$q.theme === 'ios'"
-      >
+        color="tertiary">
         <q-btn
           flat
           dense
@@ -19,10 +16,10 @@
           CVAL
           <div slot="subtitle">Running on v{{ $q.version }}</div>
         </q-toolbar-title>
-        <q-btn  label="crops" :to="{name: 'Crop'}"/>
-        <q-btn  label="view crops" :to="{name: 'Crops'}"/>
-        <q-btn  label="Structure" :to="{name: 'Structure'}"/>
-        <q-btn  label="view Structure" :to="{name: 'Structures'}"/>
+        <q-btn no-caps flat label="crops" :to="{name: 'Crop'}"/>
+        <q-btn no-caps flat label="view crops" :to="{name: 'Crops'}"/>
+        <q-btn no-caps flat label="Structure" :to="{name: 'Structure'}"/>
+        <q-btn no-caps flat label="view Structure" :to="{name: 'Structures'}"/>
       </q-toolbar>
     </q-layout-header>
 

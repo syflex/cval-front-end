@@ -1,6 +1,6 @@
 <template>
     <div>
-        <q-btn no-caps label="Signature" @click="opened = true" />
+        <q-btn color="tertiary" no-caps label="Capture Signature" @click="opened = true" />
 
 
         <q-modal v-model="opened" :content-css="{minWidth: '80vw', minHeight: '80vh'}">
@@ -13,14 +13,18 @@
             </q-toolbar>
 
             <div class="layout-padding">
-
-            <q-btn no-caps label="Accept & sign" @click="signature = true"/>
+                 <p>this is to confirm that Messrs Muhammad & Co. staff visited my farmland and carried out the enumeration
+                    of the above stated crops and economics trees in my presence/attorney and the claims above have been read 
+                    and translated to me in my local dialect which i have agreed and consented. I hereby endorse this document
+                    to confirm the true position of my claims.
+                </p>
+            <q-btn color="tertiary" no-caps label="Accept & sign" @click="signature = true" class="full-width"/>
 
             <div v-if="signature">
                 <VueSignaturePad width="100%" height="200px" ref="signaturePad" class="bg-grey-5" />
                 <div>
-                    <button @click="save">Save</button>
-                    <button @click="undo">Undo</button>
+                    <q-btn color="tertiary" @click="save">Save</q-btn>
+                    <q-btn color="negative" @click="undo">Undo</q-btn>
                 </div>
             </div>
 

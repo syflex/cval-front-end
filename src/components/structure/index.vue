@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="row full-width gutter-sm">
+        <q-card flat class="row full-width gutter-sm">
             <div class="col-7">
                 <q-input v-model="form.claimant_id" placeholder="Claimant ID"/>
                 <q-input v-model="form.first_name" placeholder="Claimant First Name"/>
@@ -26,10 +26,13 @@
                     <button @click="form.c_signature = null">Remove signature</button>
                 </div>                       
             </div>
-        </div>
+        </q-card>
 
         
-    <div v-for="(structure, index) in form.structures" v-bind:key="index" class="row">     
+    <q-card-separator class="bg-grey-10 q-mt-md"/>
+    <q-card-separator class="bg-grey-10 q-mb-sm"/>
+
+    <q-card flat v-for="(structure, index) in form.structures" v-bind:key="index" class="row">     
        
         <q-field class="col-5">
             <q-select filter v-model="structure.name" float-label="Select structure" :options="mainData" 
@@ -50,8 +53,8 @@
         <div class="col-lg-1">
            <q-btn color="red" size="sm" @click="removeLine(index)" icon="delete" round/>    
         </div>
-        <q-btn color="primary" label="add new row" size="sm" v-if="index + 1 === form.structures.length" @click="addLine" icon="add" class="full-width" />
-    </div>
+        <q-btn color="tertiary" label="add new row" size="sm" v-if="index + 1 === form.structures.length" @click="addLine" icon="add" class="full-width q-my-sm" />
+    </q-card>
 
     <div class="row full-width">
         <q-btn class="full-width" @click="save_entery" color="secondary" label="Save Entery" :loading="loading" no-caps>
