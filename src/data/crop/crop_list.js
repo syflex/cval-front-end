@@ -1,6 +1,6 @@
 const data = [
     {
-        type: 'Economic Trees', 
+        type: 'Trees', 
         data: [
             {
                 label: 'Mango', value: 'Mango'
@@ -65,7 +65,6 @@ const data = [
             {
                 label: 'Lemun Tsami', value: 'Lemun Tsami'
             },
-            ,
             {
                 label: 'Lemun Tangerine', value: 'Lemun Tangerine'
             }, 

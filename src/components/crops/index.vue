@@ -39,7 +39,7 @@
             />
         </q-field>
         <q-field class="col-2">
-            <q-select filter v-model="crop.name" float-label="Crop Name" :options="crops" />
+            <q-select filter v-model="crop.name" float-label="Crop Name" :options="filteredList" />
         </q-field> 
         <q-field class="col-2">
             <q-select filter v-model="crop.maturity" float-label="Crop Maturity" :options="maturityOptions" 
@@ -77,6 +77,7 @@
 
 import { QUploader } from "quasar";
 import cropList from './../../data/crop/crop_list.js'
+import Trees1 from './../../data/crop/tree.js'
 import cropPrice from './../../data/crop/crop_price.js'
 import cropType from './../../data/crop/crop_type.js'
 import cropMaturity from './../../data/crop/crop_maturity.js'
@@ -106,7 +107,7 @@ export default {
             loading: false,
             opened: false,
             filter_type: null,
-            crops: [],
+            
             signature: false,
 
             typeOptions: cropType,          
@@ -115,17 +116,21 @@ export default {
                 
             mainData: cropList,
 
+            filteredList: [],
+
+            trees1: Trees1,
+
             dataPrice: cropPrice,            
 
         }
     },
 
-    validations: {
-        form: {
-            first_name: { required },
-            last_name: { required },
-        }
-    },
+    // validations: {
+    //     form: {
+    //         first_name: { required },
+    //         last_name: { required },
+    //     }
+    // },
 
     components:{
         QUploader,add
@@ -156,13 +161,19 @@ export default {
         },
 
         filterType(value){
-            // console.log(value)
+            console.log(value)
             var newData = this.mainData.filter(function (data) {
-               return data.type === value
+               return data.type == value
             })
 
             newData.forEach(element => {
-                this.crops = element.data
+                if(element.data == 'Crops'){
+                    console.log(element.data)
+                    this.filteredList = element.data
+                }else{
+                    this.filteredList = element.data
+                     console.log(element.data)
+                }               
             });
             
         },
