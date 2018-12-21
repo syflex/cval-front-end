@@ -18,8 +18,8 @@
                     and translated to me in my local dialect which i have agreed and consented. I hereby endorse this document
                     to confirm the true position of my claims.
                 </p>
-            <q-btn no-caps color="tertiary" label="Accept & sign" @click="signature = true" class="full-width"/>
-            <q-btn no-caps color="tertiary" label="Accept & thumb print" @click="fingerPrint = true" class="full-width"/>
+            <q-btn no-caps color="tertiary" label="Accept & sign" @click="signature = true , fingerPrint = false" class="full-width"/>
+            <q-btn no-caps color="tertiary" label="Accept & thumb print" @click="fingerPrint = true, signature = false" class="full-width"/>
 
             <div v-if="signature">
                 <VueSignaturePad width="100%" height="200px" ref="signaturePad" class="bg-grey-5" />
@@ -39,8 +39,8 @@
                 </div>
                 <div>
                     <q-btn color="tertiary" @click="enrole">Enroll FingerPrint</q-btn>
-                    <q-btn color="tertiary" @click="saveFinger">Save Finger Print</q-btn>
-                    <q-btn color="negative" @click="finger = null">Undo</q-btn>
+                    <q-btn v-if="finger" color="tertiary" @click="saveFinger">Save Finger Print</q-btn>
+                    <q-btn  v-if="finger" color="negative" @click="finger = null">Undo</q-btn>
                 </div>
             </div>
 

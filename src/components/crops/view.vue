@@ -2,7 +2,7 @@
     <div>
         <q-table title="Crops Claimant's Table" :data="tableData" :columns="columns" row-key="name" />
 
-        <q-btn label="Sync with server" icon="email" size="xl" @click="sync" class="full-width q-mt-xl"/>
+        <q-btn label="Sync with server" color="secondary" icon="email" size="xl" @click="sync" class="full-width q-mt-xl"/>
     </div>
 </template>
 
@@ -36,14 +36,16 @@ created() {
       },
 
       sync(){
-          this.$axios.get('/api/all')
+          this.$axios.get('api/all')
           .then(Response => {
               this.$axios.post('/api/all',{
                   claimants: Response.data.claimant,
                   data: Response.data.data,
               })
               .then(Response => {
-                  alert('success')
+                   this.$q.notify({color: 'secondary', icon: 'done',
+                        message: 'data synced with server successfully'
+                    })
               })                          
           })
 

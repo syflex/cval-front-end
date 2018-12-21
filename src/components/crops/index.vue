@@ -4,12 +4,12 @@
         <q-card flat class="row full-width gutter-sm">
             <div class="col-7">
                 <q-input v-model="form.claimant_id" placeholder="Claimant ID"/>
-                <q-input v-model="form.first_name" placeholder="Claimant First Name"/>
-                <q-input v-model="form.last_name" placeholder="Claimant Last Name"/>
+                <q-input v-model="form.first_name" placeholder="Claimant First Name" :error="$v.form.first_name.$error"/>
+                <q-input v-model="form.last_name" placeholder="Claimant Last Name" :error="$v.form.last_name.$error"/>
                 <q-input v-model="form.other_name" placeholder="Claimant Other Names"/>
                 <q-input v-model="form.location" placeholder="Claimant Location"/>
                 <q-input v-model="form.community" placeholder="Claimant Community"/>
-                <q-input v-model="form.coordinates" placeholder="Coodinates"/>                
+                <q-input v-model="form.coordinates" placeholder="Coodinates" :error="$v.form.coordinates.$error"/>                
             </div>
             <div class="col-5">
                 <img :src="image ? form.image : '/statics/user.jpg'" width="60%">
@@ -125,12 +125,15 @@ export default {
         }
     },
 
-    // validations: {
-    //     form: {
-    //         first_name: { required },
-    //         last_name: { required },
-    //     }
-    // },
+    validations: {
+        form: {
+            first_name: { required },
+            last_name: { required },
+            coordinates: { required },
+            c_signature: { required },
+            image: { required },
+        }
+    },
 
     components:{
         QUploader,add
@@ -138,6 +141,13 @@ export default {
     
     methods:{
         save_entery(){
+
+                this.$v.form.$touch()
+                if (this.$v.form.$error) {
+                    this.$q.notify('Please review fields again.')
+                    return
+                }
+
             this.loading = true;
             this.$axios.post('api/crop', this.form)
             .then(Response => {
